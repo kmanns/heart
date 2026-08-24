@@ -72,210 +72,255 @@ footer .footer p {
     }
 }
 
-/* ===================================================================
- * HEART / AHA ShopCPR restyle (Part A) — additive, CSS-only overrides.
+/* =====================================================================
+ * ShopCPR footer
  *
- * Structure comes from FOOTER-CONTENT.md (Part B): footer.js appends
- * fragment.firstElementChild directly (no wrapper classes are added by
- * JS), so the classes below (aha-footer-*) are authored directly in the
- * DA document and are not existing EDS/dropin classes. No footer.js
- * changes were made.
+ * IMPORTANT: Document Authoring strips `class` attributes from authored
+ * <div>s — only EDS block-table names survive as classes. So this footer
+ * is styled STRUCTURALLY, by the position of the four authored sections
+ * and by the `h2 + ul` heading/list pattern inside them, not by custom
+ * class names.
  *
- * Brand red: #C10E21 (same source/justification as header.css).
- * =================================================================== */
+ * Authored structure (verified against /footer.plain.html):
+ *   div 1  disclaimer paragraph
+ *   div 2  brand/contact paragraphs + 4x (h2 + ul) link columns
+ *   div 3  social list + certification badge list
+ *   div 4  legal link list + copyright paragraphs
+ * ================================================================== */
 
 footer {
-    --heart-red: #c10e21;
+  background-color: var(--color-neutral-100);
+  color: #222;
 }
 
-footer .footer a {
-    color: inherit;
-    text-decoration: none;
-}
-
-footer .footer a:hover {
-    text-decoration: underline;
-}
-
-/* --- Band 1: disclaimer ------------------------------------------- */
-.aha-footer-disclaimer {
-    font-size: 0.85em;
-    color: var(--color-neutral-800);
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--color-neutral-300);
-}
-
-.aha-footer-disclaimer a {
-    color: var(--heart-red);
-    font-weight: 600;
-}
-
-/* --- Band 2: main (brand/address column + 4 link columns) --------- */
-.aha-footer-main {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    padding: 32px 0;
-}
-
-.aha-footer-brand img {
-    width: auto;
-    height: 48px;
-    max-width: 220px;
-    margin-bottom: 16px;
-}
-
-.aha-footer-brand p {
-    margin-bottom: 12px;
-    font-size: 0.9em;
-    line-height: 1.5;
-}
-
-.aha-footer-brand strong {
-    display: block;
-    margin-bottom: 2px;
-}
-
-.aha-footer-links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-}
-
-.aha-footer-links-col h2 {
-    font-size: 1em;
-    font-weight: 600;
-    margin: 0 0 12px;
-}
-
-.aha-footer-links-col ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.aha-footer-links-col li {
-    margin-bottom: 8px;
-    font-size: 0.9em;
-}
-
-/* Small chevron before each footer link, matching the live site's
-   inline "aha-icon-arrow-right" glyph after each link — implemented as a
-   CSS-only arrow rather than an icon font/asset. */
-.aha-footer-links-col li a::after {
-    content: '\276F';
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 0.75em;
-    color: var(--heart-red);
-}
-
-@media (min-width: 600px) {
-    .aha-footer-links {
-        grid-template-columns: repeat(4, 1fr);
-    }
+footer .footer > div > div {
+  margin: auto;
+  max-width: 1200px;
+  padding: 0 24px;
 }
 
 @media (min-width: 900px) {
-    .aha-footer-main {
-        flex-direction: row;
-        gap: 48px;
-    }
-
-    .aha-footer-brand {
-        flex: 0 0 25%;
-        max-width: 280px;
-    }
-
-    .aha-footer-links {
-        flex: 1 1 auto;
-    }
+  footer .footer > div > div {
+    padding: 0 32px;
+  }
 }
 
-/* --- Band 3: social icons, trust badges, legal links, copyright ---- */
-.aha-footer-social {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    padding: 32px 0;
-    border-top: 1px solid var(--color-neutral-300);
+footer .footer p {
+  margin: 0 0 10px;
+  line-height: 1.45;
 }
 
-.aha-footer-social-list,
-.aha-footer-badges {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 10px;
+footer .footer a {
+  color: #222;
+  text-decoration: none;
 }
 
-/* Rendered as visible text chips, not icon glyphs — see FOOTER-CONTENT.md
-   "Notes" for why (no AHA icon font / social SVGs are available in this
-   repo, and vendoring third-party icon assets was out of scope). */
-.aha-footer-social-list a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 20px;
-    background: var(--heart-red);
-    color: var(--color-neutral-50);
-    font-size: 0.75em;
-    font-weight: 600;
+footer .footer a:hover {
+  color: var(--aha-red, #c10e21);
+  text-decoration: underline;
 }
 
-.aha-footer-social-list a:hover {
-    background: var(--color-neutral-900);
-    text-decoration: none;
+/* --- div 1: top disclaimer --- */
+footer .footer > div > div:nth-child(1) {
+  padding-top: 28px;
+  padding-bottom: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #555;
+  text-align: center;
 }
 
-.aha-footer-badges a {
-    display: inline-flex;
-    align-items: center;
-    height: 32px;
-    padding: 0 12px;
-    border: 1px solid var(--color-neutral-400);
-    border-radius: 4px;
-    font-size: 0.75em;
-    color: var(--color-neutral-800);
+footer .footer > div > div:nth-child(1) a {
+  color: var(--aha-red, #c10e21);
+  text-decoration: underline;
 }
 
-.aha-footer-legal {
-    padding: 0 0 32px;
-    text-align: center;
+/* --- div 2: brand/contact column + four link columns --- */
+footer .footer > div > div:nth-child(2) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px 32px;
+  padding-bottom: 32px;
 }
 
-.aha-footer-legal > ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    list-style: none;
-    margin: 0 0 20px;
-    padding: 0;
-    gap: 4px 16px;
-    font-size: 0.8em;
+@media (min-width: 900px) {
+  footer .footer > div > div:nth-child(2) {
+    /* brand column, then four equal link columns */
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    gap: 0 28px;
+  }
 }
 
-.aha-footer-privacy-btn {
-    display: inline-block;
-    margin: 0 0 20px;
-    padding: 8px 20px;
-    background: transparent;
-    border: 1px solid var(--color-neutral-800);
-    border-radius: 20px;
-    font-size: 0.8em;
-    cursor: pointer;
+/* the brand/contact paragraphs occupy the first column and stack */
+footer .footer > div > div:nth-child(2) > p {
+  font-size: 13px;
 }
 
-.aha-footer-legal p {
-    font-size: 0.75em;
-    color: var(--color-neutral-700);
-    margin-bottom: 4px;
-    text-align: center;
+@media (min-width: 900px) {
+  footer .footer > div > div:nth-child(2) > p {
+    grid-column: 1;
+  }
+}
+
+footer .footer > div > div:nth-child(2) > p:first-child {
+  margin-bottom: 16px;
+}
+
+footer .footer > div > div:nth-child(2) picture,
+footer .footer > div > div:nth-child(2) img {
+  display: block;
+  width: 150px;
+  max-width: 100%;
+  height: auto;
+}
+
+footer .footer > div > div:nth-child(2) > p strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* each h2 starts a link column; place them across columns 2..5 */
+footer .footer > div > div:nth-child(2) > h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 18px 0 10px;
+  color: #222;
+}
+
+footer .footer > div > div:nth-child(2) > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+footer .footer > div > div:nth-child(2) > ul > li {
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+  position: relative;
+  padding-right: 14px;
+}
+
+/* small chevron after each link, as on the reference site */
+footer .footer > div > div:nth-child(2) > ul > li::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 0.42em;
+  width: 5px;
+  height: 5px;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+  transform: rotate(-45deg);
+}
+
+@media (min-width: 900px) {
+  footer .footer > div > div:nth-child(2) > h2 {
+    margin-top: 0;
+  }
+
+  /* h2/ul pairs: column 2 = 1st pair, column 3 = 2nd, etc. */
+  footer .footer > div > div:nth-child(2) > h2:nth-of-type(1) { grid-column: 2; grid-row: 1; }
+  footer .footer > div > div:nth-child(2) > ul:nth-of-type(1) { grid-column: 2; grid-row: 2; }
+  footer .footer > div > div:nth-child(2) > h2:nth-of-type(2) { grid-column: 3; grid-row: 1; }
+  footer .footer > div > div:nth-child(2) > ul:nth-of-type(2) { grid-column: 3; grid-row: 2; }
+  footer .footer > div > div:nth-child(2) > h2:nth-of-type(3) { grid-column: 4; grid-row: 1; }
+  footer .footer > div > div:nth-child(2) > ul:nth-of-type(3) { grid-column: 4; grid-row: 2; }
+  footer .footer > div > div:nth-child(2) > h2:nth-of-type(4) { grid-column: 5; grid-row: 1; }
+  footer .footer > div > div:nth-child(2) > ul:nth-of-type(4) { grid-column: 5; grid-row: 2; }
+
+  /* brand paragraphs span the full height of the first column */
+  footer .footer > div > div:nth-child(2) > p {
+    grid-column: 1;
+  }
+}
+
+/* --- div 3: social icons + certification badges --- */
+footer .footer > div > div:nth-child(3) {
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: 22px;
+  padding-bottom: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px 28px;
+}
+
+footer .footer > div > div:nth-child(3) ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+/* circular social buttons */
+footer .footer > div > div:nth-child(3) ul:first-of-type > li > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #6d6e71;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+footer .footer > div > div:nth-child(3) ul:first-of-type > li > a:hover {
+  background: var(--aha-red, #c10e21);
+  color: #fff;
+  text-decoration: none;
+}
+
+footer .footer > div > div:nth-child(3) ul:last-of-type > li {
+  font-size: 11px;
+  color: #666;
+}
+
+/* --- div 4: legal links + copyright --- */
+footer .footer > div > div:nth-child(4) {
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: 18px;
+  padding-bottom: 28px;
+}
+
+footer .footer > div > div:nth-child(4) ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+footer .footer > div > div:nth-child(4) ul > li {
+  font-size: 12px;
+  position: relative;
+}
+
+/* thin separator between legal links */
+footer .footer > div > div:nth-child(4) ul > li:not(:last-child)::after {
+  content: '|';
+  position: absolute;
+  right: -9px;
+  color: #bbb;
+}
+
+footer .footer > div > div:nth-child(4) ul > li > a {
+  color: var(--aha-red, #c10e21);
+}
+
+footer .footer > div > div:nth-child(4) p {
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #666;
+  margin: 0 0 6px;
 }
