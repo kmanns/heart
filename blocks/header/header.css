@@ -1204,3 +1204,44 @@ header nav .nav-tools::after {
     font-weight: 400;
   }
 }
+
+/* ---------------------------------------------------------------------
+ * Brand logo: work around the EDS <picture> type mismatch for SVGs
+ *
+ * When an SVG logo is ingested by DA/EDS, the generated <picture> emits
+ * `<source type="image/webp" srcset="...format=webply...">` candidates,
+ * but the origin serves those URLs back as `Content-Type: image/svg+xml`
+ * (verified: all four candidate URLs return image/svg+xml). The browser
+ * honours the declared type, receives SVG bytes, rejects the candidate
+ * and never falls back — so the <img> stays at naturalWidth 0 and the
+ * logo never paints even though the file itself is fine.
+ *
+ * Fix: hide the broken <picture> and paint the same asset as a
+ * background-image on the brand link, which has no type negotiation.
+ * ------------------------------------------------------------------- */
+header nav .nav-brand a:has(picture) {
+  display: block;
+  width: 188px;
+  height: 64px;
+  background-image: url('https://shopcpr-cdn.heart.org/pub/static/frontend/Aha/ShopCPR/en_US/images/logo.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+}
+
+header nav .nav-brand a:has(picture) picture,
+header nav .nav-brand a:has(picture) img {
+  /* keep it in the a11y tree via alt text, but out of the visual flow */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 899px) {
+  header nav .nav-brand a:has(picture) {
+    width: 150px;
+    height: 51px;
+  }
+}
