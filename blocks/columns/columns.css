@@ -31,3 +31,87 @@
     order: unset;
   }
 }
+
+/* Variant: hero-banner
+   Two-column hero used on the homepage: a white "card" (logo, heading, body
+   copy, CTA) in the first column and a full-bleed image in the second
+   column. Author by setting the block name/options cell to
+   "Columns (hero-banner)" -> renders as class="columns hero-banner".
+   Intended to be placed inside a section with Section Metadata Style
+   set to "AHA Red" (see styles/styles.css) so the banner sits on the
+   AHA-red background. */
+.columns.hero-banner {
+  margin: 0;
+}
+
+.columns.hero-banner > div {
+  gap: 0;
+  align-items: stretch;
+}
+
+.columns.hero-banner > div > div {
+  order: 0;
+}
+
+.columns.hero-banner > div > div:first-child {
+  background-color: var(--background-color);
+  color: var(--color-neutral-800);
+  box-shadow: var(--shape-shadow-2);
+  border-radius: var(--shape-border-radius-1);
+  padding: var(--spacing-medium);
+  position: relative;
+  z-index: 1;
+}
+
+.columns.hero-banner > div > div:first-child img {
+  width: auto;
+  max-height: 48px;
+}
+
+.columns.hero-banner > div > div:first-child h1 {
+  font-size: 2.4rem;
+  margin-top: var(--spacing-small);
+}
+
+.columns.hero-banner > div > div:first-child .button-container a,
+.columns.hero-banner > div > div:first-child a.button {
+  color: var(--color-aha-red);
+  font-weight: 700;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.columns.hero-banner > div > div:first-child .button-container a::after,
+.columns.hero-banner > div > div:first-child a.button::after {
+  content: " \203A";
+}
+
+.columns.hero-banner > div > .columns-img-col {
+  order: 1;
+}
+
+.columns.hero-banner > div > .columns-img-col img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .columns.hero-banner > div {
+    gap: 0;
+  }
+
+  .columns.hero-banner > div > div:first-child {
+    flex: 0 1 420px;
+    max-width: 420px;
+    margin: var(--spacing-xbig) 0 var(--spacing-xbig) 0;
+  }
+
+  .columns.hero-banner > div > .columns-img-col {
+    flex: 1 1 auto;
+    margin-left: -48px;
+  }
+}

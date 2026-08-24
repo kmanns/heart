@@ -362,11 +362,13 @@ export default async function decorate(block) {
 
     const totalQuantity = data?.totalQuantity ?? 0;
 
-    if (totalQuantity) {
-      cartButton.setAttribute('data-count', totalQuantity);
-    } else {
-      cartButton.removeAttribute('data-count');
-    }
+    // Target design (shopcpr.heart.org) always shows a "( N )" counter next
+    // to the cart icon, including when the cart is empty ("( 0 )"). The
+    // boilerplate only set data-count when non-zero, which hid the counter
+    // for empty carts. Always set it so header.css can render "( N )" via
+    // `content: '(' attr(data-count) ')'`. This is the one deliberate JS
+    // change in this restyle; it does not alter any dropin/event wiring.
+    cartButton.setAttribute('data-count', totalQuantity);
 
     // Skip the announcement for the initial value on page load so screen
     // reader users aren't told about the cart contents before they've

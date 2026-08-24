@@ -64,3 +64,42 @@ This block does not emit or listen to any custom events. -->
 - **Missing Images**: If a card row has no image, only body content is displayed
 - **Empty Cards**: Empty rows are still rendered as cards with appropriate spacing
 - **Fallback Behavior**: Block gracefully handles missing or malformed content
+
+## Variants
+
+The block JS is generic; variants are pure CSS modifiers added to the block
+class list by authoring the block name/options cell as `Cards (variant-name)`,
+which EDS renders as `class="cards variant-name"`.
+
+### `guideline-cards`
+
+3-up cards (image, heading, body copy, red chevron CTA link) separated by a
+vertical divider instead of a full card border/box. Used for a "3 cards
+under a heading, no boxed borders" layout.
+
+```
+| Cards (guideline-cards) |
+|--------------------------|
+| ![img](...) | <h3>Heading</h3><p>Body copy</p><p><a href="...">CTA label</a></p> |
+```
+
+### `kit-cards`
+
+Same 3-up layout as `guideline-cards`, but the CTA link sits on top of a
+light horizontal divider bar instead of getting a chevron-only treatment
+next to the copy.
+
+### `course-tiles`
+
+Grid of image tiles (2-up on mobile, 4-up on desktop) with a short caption
+overlaid bottom-left on the image in white text over a dark gradient. The
+second cell in each row should contain only a short label (no separate
+heading/body split is rendered visually, though the markup still uses the
+standard image/body split).
+
+```
+| Cards (course-tiles) |
+|------------------------|
+| ![img](...) | BLS |
+| ![img](...) | ACLS |
+```

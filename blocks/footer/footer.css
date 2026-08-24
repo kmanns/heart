@@ -71,3 +71,211 @@ footer .footer p {
         padding: 40px 32px 24px;
     }
 }
+
+/* ===================================================================
+ * HEART / AHA ShopCPR restyle (Part A) — additive, CSS-only overrides.
+ *
+ * Structure comes from FOOTER-CONTENT.md (Part B): footer.js appends
+ * fragment.firstElementChild directly (no wrapper classes are added by
+ * JS), so the classes below (aha-footer-*) are authored directly in the
+ * DA document and are not existing EDS/dropin classes. No footer.js
+ * changes were made.
+ *
+ * Brand red: #C10E21 (same source/justification as header.css).
+ * =================================================================== */
+
+footer {
+    --heart-red: #c10e21;
+}
+
+footer .footer a {
+    color: inherit;
+    text-decoration: none;
+}
+
+footer .footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Band 1: disclaimer ------------------------------------------- */
+.aha-footer-disclaimer {
+    font-size: 0.85em;
+    color: var(--color-neutral-800);
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.aha-footer-disclaimer a {
+    color: var(--heart-red);
+    font-weight: 600;
+}
+
+/* --- Band 2: main (brand/address column + 4 link columns) --------- */
+.aha-footer-main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 32px 0;
+}
+
+.aha-footer-brand img {
+    width: auto;
+    height: 48px;
+    max-width: 220px;
+    margin-bottom: 16px;
+}
+
+.aha-footer-brand p {
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.aha-footer-brand strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.aha-footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.aha-footer-links-col h2 {
+    font-size: 1em;
+    font-weight: 600;
+    margin: 0 0 12px;
+}
+
+.aha-footer-links-col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.aha-footer-links-col li {
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+/* Small chevron before each footer link, matching the live site's
+   inline "aha-icon-arrow-right" glyph after each link — implemented as a
+   CSS-only arrow rather than an icon font/asset. */
+.aha-footer-links-col li a::after {
+    content: '\276F';
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 0.75em;
+    color: var(--heart-red);
+}
+
+@media (min-width: 600px) {
+    .aha-footer-links {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    .aha-footer-main {
+        flex-direction: row;
+        gap: 48px;
+    }
+
+    .aha-footer-brand {
+        flex: 0 0 25%;
+        max-width: 280px;
+    }
+
+    .aha-footer-links {
+        flex: 1 1 auto;
+    }
+}
+
+/* --- Band 3: social icons, trust badges, legal links, copyright ---- */
+.aha-footer-social {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px 0;
+    border-top: 1px solid var(--color-neutral-300);
+}
+
+.aha-footer-social-list,
+.aha-footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 10px;
+}
+
+/* Rendered as visible text chips, not icon glyphs — see FOOTER-CONTENT.md
+   "Notes" for why (no AHA icon font / social SVGs are available in this
+   repo, and vendoring third-party icon assets was out of scope). */
+.aha-footer-social-list a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 20px;
+    background: var(--heart-red);
+    color: var(--color-neutral-50);
+    font-size: 0.75em;
+    font-weight: 600;
+}
+
+.aha-footer-social-list a:hover {
+    background: var(--color-neutral-900);
+    text-decoration: none;
+}
+
+.aha-footer-badges a {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--color-neutral-400);
+    border-radius: 4px;
+    font-size: 0.75em;
+    color: var(--color-neutral-800);
+}
+
+.aha-footer-legal {
+    padding: 0 0 32px;
+    text-align: center;
+}
+
+.aha-footer-legal > ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+    gap: 4px 16px;
+    font-size: 0.8em;
+}
+
+.aha-footer-privacy-btn {
+    display: inline-block;
+    margin: 0 0 20px;
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid var(--color-neutral-800);
+    border-radius: 20px;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+.aha-footer-legal p {
+    font-size: 0.75em;
+    color: var(--color-neutral-700);
+    margin-bottom: 4px;
+    text-align: center;
+}

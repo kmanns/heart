@@ -349,24 +349,36 @@ header nav .nav-tools-wrapper>button {
 header nav .nav-tools button.nav-cart-button {
   background-image: url('../../icons/cart.svg');
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: 8px center;
+  background-size: 20px;
+  background-color: transparent;
   position: relative;
+  width: auto;
+  min-width: 40px;
+  padding: 10px 12px 10px 32px;
+  white-space: nowrap;
 }
 
+/*
+ * shopcpr.heart.org shows the cart icon with an inline "( N )" counter
+ * (including "( 0 )" for an empty cart), not a floating circular badge.
+ * header.js now always sets [data-count] (see header.js comment), so this
+ * renders the counter as plain text next to the icon instead of an
+ * absolute-positioned circle overlay.
+ */
 header nav .nav-tools button.nav-cart-button[data-count]::after {
-  content: attr(data-count);
-  position: absolute;
-  top: 0;
-  right: -2px;
-  background-color: var(--color-brand-700);
-  color: var(--color-neutral-100);
-  border-radius: 50%;
-  width: 1.75em;
-  height: 1.75em;
-  display: flex;
-  align-items: center;
+  content: '( ' attr(data-count) ' )';
+  position: static;
+  display: inline-block;
+  margin-left: 22px;
+  background: transparent;
+  color: var(--color-neutral-900);
+  border-radius: 0;
+  width: auto;
+  height: auto;
   font-size: 0.8em;
-  justify-content: center;
+  font-weight: 600;
+  vertical-align: middle;
 }
 
 header nav .nav-tools .nav-cart-status {
@@ -888,5 +900,307 @@ body:has(.seller-assisted-buying-banner) {
   .seller-assisted-buying-banner__close-button span {
     line-height: 1.1;
     display: inline-block;
+  }
+}
+
+/* ===================================================================
+ * HEART / AHA ShopCPR restyle (Part A) — additive, CSS-only overrides.
+ *
+ * Brand red: #C10E21. Source: https://aui.heart.org/aha-ui/prod/1.0.5/
+ * dist/css/aha-dist.css custom properties `--primary: #C10E21` and
+ * `--red: #C10E21` (also matches the live .scpr-login link color
+ * `#c10e21` and is a close match to the ShopCPR wordmark fill
+ * `.st1{fill:#C22126}` in the hotlinked logo.svg). We standardize on
+ * #C10E21 as it is the site's own documented brand-red custom property,
+ * not just an incidental SVG fill.
+ *
+ * Everything below only adds new selectors/declarations or narrows
+ * existing boilerplate rules with equal-or-lower specificity that are
+ * naturally overridden by source order (this block is appended last).
+ * No classes were renamed and no dropin markup/JS wiring was touched
+ * except the single header.js change documented above (always setting
+ * [data-count], including 0, on the cart button).
+ * =================================================================== */
+
+header {
+  --heart-red: #c10e21;
+  --heart-border: var(--color-neutral-300);
+}
+
+/* --- Brand / logo ---------------------------------------------------
+ * Logo is hotlinked from shopcpr-cdn.heart.org (third-party brand asset,
+ * not vendored). Its native viewBox is 385x130.7 (~2.945:1). We size by
+ * height and let width follow via `height: auto` on the <img>, which is
+ * safe for any aspect-ratio image an author drops in.
+ */
+header nav .nav-brand {
+  min-width: 0;
+}
+
+header nav .nav-brand a {
+  display: flex;
+  align-items: center;
+  flex-basis: auto;
+}
+
+header nav .nav-brand img {
+  width: auto;
+  height: 40px;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+@media (min-width: 900px) {
+  header {
+    /* Taller row 1 to comfortably fit the ~265x85 logo alongside the
+       utility cluster; only scoped to elements inside <header> because
+       --nav-height is a custom property and this re-declaration cascades
+       to header's descendants (nav-tools-panel offsets, etc.) without
+       affecting --nav-height anywhere else on the page. */
+    --nav-height: 88px;
+  }
+
+  header nav .nav-brand img {
+    height: 64px;
+    max-width: 265px;
+  }
+}
+
+/* --- Two-row desktop layout ------------------------------------------
+ * Row 1: logo (left) + utility cluster (right), on one line.
+ * Row 2: horizontal nav-sections link bar, left-aligned, thin bottom
+ * border (provided by the existing header .nav-wrapper border-bottom,
+ * which sits directly under row 2 since row 2 is the last grid row).
+ *
+ * LAYOUT LESSON applied: nav-sections is flex:0 1 auto with min-width:0
+ * (not flex:1 1 auto/nowrap) so it cannot grow past the viewport and
+ * push nav-tools off-screen; nav-tools is flex:0 0 auto; top-level <li>
+ * items are flex:0 0 auto so labels don't clip mid-word. Verified with
+ * getBoundingClientRect() — see HEADER-REPORT.md.
+ */
+@media (min-width: 900px) {
+  header nav {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'brand . tools'
+      'sections sections sections';
+    grid-template-rows: var(--nav-height) auto;
+    /*
+     * The mobile-first base rule sets `header nav { height: var(--nav-height); }`
+     * which — unless overridden — clips this two-row grid to a single row's
+     * height. That silently pushed row 2 (nav-sections) AND the
+     * grid-area:tools column outside the nav's own box, rendering the
+     * utility cluster below/behind the header instead of inside row 1.
+     * Caught only by measuring getBoundingClientRect() (a screenshot alone
+     * looked plausible); `height: auto` lets the grid size to both rows.
+     */
+    height: auto;
+    row-gap: 0;
+    column-gap: 32px;
+  }
+
+  header nav .nav-brand {
+    grid-area: brand;
+  }
+
+  header nav .nav-tools {
+    grid-area: tools;
+    flex: 0 0 auto;
+    justify-self: end;
+  }
+
+  header nav .nav-sections {
+    grid-area: sections;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 10px 0;
+    border-top: 1px solid var(--heart-border);
+    white-space: normal;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li {
+    flex: 0 0 auto;
+  }
+
+  header nav .nav-sections ul {
+    flex-wrap: nowrap;
+  }
+
+  header nav .nav-sections ul > li,
+  header nav .nav-sections ul > li > a {
+    font: 400 15px var(--type-base-font-family, inherit);
+    color: var(--color-neutral-900);
+    font-weight: 400;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li:hover,
+  header nav .nav-sections .nav-drop[aria-expanded='true'] {
+    background-color: transparent;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li:hover > a,
+  header nav .nav-sections .nav-drop[aria-expanded='true'] > a {
+    color: var(--heart-red);
+    text-decoration: none;
+  }
+}
+
+/* --- Dropdown submenu panels ------------------------------------------
+ * LAYOUT LESSON applied: the boilerplate gives `.submenu-wrapper` a
+ * `width: 100%`, which resolves against the narrow trigger <li> (not the
+ * nav), while the inner <ul> is pinned to a fixed --desktop-large-panel-
+ * width. That mismatch made the panel's hit box narrower than its
+ * visible content. We give the wrapper an explicit width instead, and
+ * make the inner <ul> fill that explicit width (100% of the wrapper).
+ *
+ * LAYOUT LESSON applied: there was a vertical gap between the trigger
+ * <li> and the panel (top: var(--spacing-large)) that broke mouse hover
+ * (moving the mouse down through the gap unhovers the trigger before
+ * reaching the panel). We bridge it with an invisible ::after on the
+ * trigger that spans exactly that gap, so the trigger stays :hover'd
+ * while the cursor crosses into the panel.
+ */
+@media (min-width: 900px) {
+  header nav .nav-sections .default-content-wrapper > ul > li.nav-drop {
+    position: relative;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li.nav-drop::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 10px;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-wrapper {
+    top: calc(100% + 10px);
+    left: 0;
+    width: min(720px, 90vw);
+    max-width: 720px;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] ul {
+    width: 100%;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li ul::before {
+    top: -10px;
+  }
+}
+
+/* --- Utility cluster (row 1, right side) ------------------------------
+ * DOM order from header.js is: wishlist, mini-cart, search, then the
+ * auth dropdown (renderAuthDropdown) and, when authenticated + company
+ * switching is enabled, the company switcher. nav-tools is a flex
+ * container, so we reorder visually with `order` instead of touching
+ * the DOM/JS, to match the target order: Sign in|Sign up, search icon,
+ * cart "(N)", language chip.
+ *
+ * The wishlist icon is not part of the target design's utility cluster.
+ * It is hidden with `display: none` only — the button, its panel, and
+ * the click handler registered in header.js are untouched and still
+ * function; it is simply not shown, matching shopcpr.heart.org, which
+ * has no wishlist icon in its header.
+ */
+header nav .nav-tools {
+  gap: 20px;
+}
+
+header nav .nav-tools .wishlist-wrapper.nav-tools-wrapper {
+  display: none;
+}
+
+/* Defensive: if the authored nav-tools div (div 3 of /nav) contains an
+   empty <p> placeholder to stop DA from stripping the div (see
+   NAV-CONTENT.md), it should never take up visible space. */
+header nav .nav-tools > p:empty {
+  display: none;
+}
+
+header nav .nav-tools .dropdown-wrapper.nav-tools-wrapper {
+  order: 1;
+}
+
+header nav .nav-tools .search-wrapper.nav-tools-wrapper {
+  order: 2;
+}
+
+header nav .nav-tools .minicart-wrapper.nav-tools-wrapper {
+  order: 3;
+}
+
+/* Sign in / Sign up ------------------------------------------------- */
+.dropdown-wrapper.nav-tools-wrapper .nav-dropdown-button {
+  color: var(--heart-red);
+  font-size: 14px;
+}
+
+/*
+ * renderAuthDropdown.js injects an SVG account icon into the button only
+ * for the unauthenticated state; the authenticated state replaces it
+ * with plain text ("Hi, {firstname}") and no <svg>. We use :has(svg) to
+ * detect the unauthenticated state in CSS only, hide the injected icon,
+ * and generate the "Sign In | Sign Up" label the target design shows —
+ * without touching renderAuthDropdown.js. When authenticated, :has(svg)
+ * is false so this rule simply does not apply and "Hi, {firstname}"
+ * renders unchanged.
+ */
+.dropdown-wrapper.nav-tools-wrapper .nav-dropdown-button:has(svg) {
+  width: auto;
+  min-width: 0;
+  padding: 10px 4px;
+}
+
+.dropdown-wrapper.nav-tools-wrapper .nav-dropdown-button:has(svg) svg {
+  display: none;
+}
+
+.dropdown-wrapper.nav-tools-wrapper .nav-dropdown-button:has(svg)::before {
+  content: 'Sign In | Sign Up';
+  white-space: nowrap;
+  color: var(--heart-red);
+  font-weight: 500;
+}
+
+/* Language switcher (cosmetic placeholder only) ---------------------
+ * IMPORTANT: there is no i18n/language-switching dropin or JS in this
+ * project (unlike auth/cart/search/company-switcher, which are all
+ * real dropin-backed features). shopcpr.heart.org's globe+EN+caret is
+ * decorative here — CSS generated content on nav-tools::after — purely
+ * to match the visual target. It is NOT interactive/clickable and does
+ * NOT switch any language. Implementing a real language switcher would
+ * require new JS and is out of scope for a CSS-only restyle; see
+ * HEADER-REPORT.md "What I could NOT do".
+ */
+header nav .nav-tools::after {
+  content: '\1F310 EN \25BE';
+  order: 4;
+  align-self: center;
+  font-size: 14px;
+  color: var(--color-neutral-900);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 599px) {
+  header nav .nav-tools::after {
+    display: none;
+  }
+}
+
+/* --- Mobile (<900px) nav link sizing tweak ---------------------------
+ * Boilerplate mobile styles already work well (hamburger + full-screen
+ * overlay). We only lighten the top-level link weight to better match
+ * the target's non-bold nav labels; everything else (submenu-wrapper
+ * fullscreen slide-in, back-link, chevrons) is untouched.
+ */
+@media (max-width: 899px) {
+  header nav .nav-sections ul > li {
+    font-weight: 400;
   }
 }
