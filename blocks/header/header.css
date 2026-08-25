@@ -349,37 +349,22 @@ header nav .nav-tools-wrapper>button {
 header nav .nav-tools button.nav-cart-button {
   background-image: url('../../icons/cart.svg');
   background-repeat: no-repeat;
-  background-position: 8px center;
+  background-position: center;
   background-size: 20px;
   background-color: transparent;
   position: relative;
-  width: auto;
+  width: 40px;
   min-width: 40px;
-  padding: 10px 12px 10px 32px;
-  white-space: nowrap;
+  padding: 10px;
 }
 
 /*
- * shopcpr.heart.org shows the cart icon with an inline "( N )" counter
- * (including "( 0 )" for an empty cart), not a floating circular badge.
- * header.js now always sets [data-count] (see header.js comment), so this
- * renders the counter as plain text next to the icon instead of an
- * absolute-positioned circle overlay.
+ * Cart counter: keep the boilerplate's own badge treatment (a small
+ * circular count bubble that only appears when the cart is non-empty).
+ * An earlier pass rendered an inline "( N )" text counter here to mirror
+ * shopcpr.heart.org, but next to the bag icon it read as a second,
+ * duplicate control rather than a count, so it was removed.
  */
-header nav .nav-tools button.nav-cart-button[data-count]::after {
-  content: '( ' attr(data-count) ' )';
-  position: static;
-  display: inline-block;
-  margin-left: 22px;
-  background: transparent;
-  color: var(--color-neutral-900);
-  border-radius: 0;
-  width: auto;
-  height: auto;
-  font-size: 0.8em;
-  font-weight: 600;
-  vertical-align: middle;
-}
 
 header nav .nav-tools .nav-cart-status {
   position: absolute;
