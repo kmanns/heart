@@ -6,25 +6,25 @@
       "commerce-assets-enabled": true,
       "headers": {
         "all": {
-          "Store": "default"
+          "Store": "cpreng"
         },
         "cs": {
           "Magento-Customer-Group": "",
-          "Magento-Store-Code": "main_website_store",
-          "Magento-Store-View-Code": "default",
-          "Magento-Website-Code": "base"
+          "Magento-Store-Code": "shopcpr",
+          "Magento-Store-View-Code": "cpreng",
+          "Magento-Website-Code": "heart"
         }
       },
       "analytics": {
         "base-currency-code": "USD",
         "environment": "Production",
         "store-id": 1,
-        "store-name": "Main Website Store",
+        "store-name": "ShopCPR Store",
         "store-url": "https://main--heart--kmanns.aem.live/",
         "store-view-id": 1,
-        "store-view-name": "Default Store View",
+        "store-view-name": "ShopCPR English",
         "website-id": 1,
-        "website-name": "Main Website"
+        "website-name": "American Heart Association"
       },
       "commerce-b2b-enabled": true,
       "commerce-companies-enabled": true
