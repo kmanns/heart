@@ -163,7 +163,16 @@ body:not(.appear) {
 
 header {
   grid-row: 1;
-  height: var(--nav-height);
+  /* min-height (not height): --nav-height is the baseline nav height, but
+   * header nav .nav-wrapper can render taller than that (e.g. wrapped nav
+   * links at intermediate viewport widths ~900-1024px). A fixed `height`
+   * clipped that overflow out of the grid's row-sizing calculation, so
+   * `main` (grid-row 2) started underneath the overflowing nav instead of
+   * below it — hiding anything at the top of the page (e.g. the PDP's
+   * add-to-cart error alert) behind the header. min-height keeps the
+   * reserved space at least --nav-height while letting the row grow to
+   * fit the nav's real rendered height. */
+  min-height: var(--nav-height);
 }
 
 main {
