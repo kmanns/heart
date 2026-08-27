@@ -30,6 +30,39 @@ const setCustomerGroupHeader = (customerGroupId) => {
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
 };
 
+// The auth drop-in's `auth/group-uid` event is intentionally NOT the
+// customer's real Magento customer group id: it's designed for Adobe
+// Commerce Optimizer (ACO) storefronts, which must not expose the raw
+// group id, so it emits a one-way SHA-1 hash of the group uid bytes
+// instead (see @dropins/storefront-auth). On non-ACO storefronts (this
+// project), Catalog Service's Magento-Customer-Group header needs the
+// actual numeric group id, not that hash - forwarding the hash silently
+// breaks catalog/price lookups for every logged-in customer (products can
+// come back empty from Catalog Service and prices show as 0.00), while
+// guests are unaffected because there's no group uid to hash for them.
+// Fetch and decode the real group id ourselves instead of relying on
+// `auth/group-uid` for this.
+const fetchAndSetRealCustomerGroupHeader = async (isAuthenticated) => {
+  if (!isAuthenticated) {
+    CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('Magento-Customer-Group');
+    return;
+  }
+  try {
+    const { data } = await CORE_FETCH_GRAPHQL.fetchGraphQl(
+      'query GET_CUSTOMER_GROUP { customer { group { uid } } }',
+    );
+    const groupUid = data?.customer?.group?.uid;
+    // group.uid is base64-encoded (e.g. "OA==" decodes to the numeric
+    // group id "8"); Catalog Service expects the decoded numeric id.
+    const decoded = groupUid ? atob(groupUid) : '';
+    if (/^\d+$/.test(decoded)) {
+      setCustomerGroupHeader(decoded);
+    }
+  } catch (error) {
+    console.error('Failed to fetch customer group for Magento-Customer-Group header:', error);
+  }
+};
+
 const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
   if (adobeCommerceOptimizer?.priceBookId) {
     CS_FETCH_GRAPHQL.setFetchGraphQlHeader('AC-Price-Book-ID', adobeCommerceOptimizer.priceBookId);
@@ -62,13 +95,6 @@ const setupAemAssetsImageParams = () => {
 
 export default async function initializeDropins() {
   const init = async () => {
-    // Set Customer-Group-ID header
-    if (getConfigValue('adobe-commerce-optimizer')) {
-      events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
-    } else {
-      events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
-    }
-
     // Clear cart state when switching between websites to avoid stale cart IDs
     // and authentication state from a different website causing errors.
     const storedWebsitePath = getCookie(DROPIN_WEBSITE_COOKIE);
@@ -82,8 +108,18 @@ export default async function initializeDropins() {
     }
     document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
 
-    // Set auth headers on authenticated event
+    // Set auth headers on authenticated event. Registered first so that
+    // Authorization is already on CORE_FETCH_GRAPHQL by the time the
+    // Customer-Group-ID listener below runs its own query.
     events.on('authenticated', setAuthHeaders, { eager: true });
+
+    // Set Customer-Group-ID header. Must run after setAuthHeaders (above)
+    // so the customer group lookup query carries the Authorization header.
+    if (getConfigValue('adobe-commerce-optimizer')) {
+      events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
+    } else {
+      events.on('authenticated', fetchAndSetRealCustomerGroupHeader, { eager: true });
+    }
 
     // Cache cart data in session storage
     events.on('cart/data', persistCartDataInSession, { eager: true });
